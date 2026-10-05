@@ -1,0 +1,93 @@
+Naturally, not all of the 32 bit RISC-V instructions could make the cut.
+Because of this, some use cases and features aren't included.
+
+The biggest thing cut was all of the operating system based instructions.
+This includes: csrrw, csrrs, csrrc, ecall, ebreak
+
+Next, because of the reduced instruction size, I had to cut out the number of total opcodes.
+I was able to reduce the 10 different opcodes down to just 8 instruction categories:
+    Register Arithmatic
+    Immediate Arithmatic
+    Load Word
+    Store Word
+    Load Upper Immediate
+    Branch
+    Jump
+    Jump Register
+This allows the opcode to be only 3 bits big
+
+The next major downsize was the number of registers.
+At 32 registers, it would be pysically impossible to fit 3 different registers plus an opcode into the 16 bit instructions.
+Because of this, I cut it to only 8 registers. Letting 3 bits define a register number
+The registers that remained are:
+    x0  -   zero    - register hardwired to ground
+    x1  -   ra      - return address
+    x2  -   sp      - stack pointer
+    x3  -   a0/t0   - return value 0 / argument 0 / temporary 1
+    x4  -   a1/t1   - return value 1 / argument 1 / temporary 1
+    x5  -   a2/t2   - argument 2 / temporary 2
+    x6  -   s0      - safe register 0
+    x7  -   s1      - safe register 1
+This maintains x0, ra, and sp for the same uses as RISC-V while also leaving 3 arguments/2 return values which can also be used as temp register.
+The 2 safe registers, by RISC-V procedure calling conventions, should be backed up and restored to the stack if used so the value is preserved for the caller.
+
+Finally, the design of the instruction types.
+My design has 6 types: R, I, L, S, U, UJ
+These are very similar to the RISC-V equivalents, but without the bit stiching for branches and jumps and shorter funct options.
+The types are defined as follows:
+    R - f2 (15:14) - fr (13:12) - rs2 (11:9) - rs1 (8:6) - rd (5:3) - OpCode (2:0)
+        R Types operate on two registers (rs1, rs2) and store the result into the third (rd).
+        The f2 and fr bits allow for differentiation between the 8 ALU operations.
+        The instructions that are R Types are:
+            add     rd = rs1 + rs2
+            sub     rd = rs1 - rs2
+            xor     rd = rs1 ^ rs2
+            or      rd = rs1 | rs2
+            and     rd = rs1 & rs2
+            sll     rd = rs1 << rs2
+            srl     rd = rs1 >> rs2 (filled with zeros)
+            sra     rd = rs1 >> rs2 (sign extended)
+    I - f2 (15:14) - IMM[4:0] (13:9) - rs1 (8:6) - rd (5:3) - OpCode (2:0)
+        I Types operate on one register (rs1) and a 5 bit immediate (IMM). The result is stored in rd.
+        The f2 bits allow for differention between 4 ALU operations. Removing the shift operators and subtract allows for a longer immediate than otherwise.
+        With 5 bits, the immediate is a sign extended value from -16 to 15.
+        While this range isn't the greatest, it allows for small arthimatic and value loading without using multiple instructions to load a full 16 bit word.
+        The other I Type is jump and link register. This uses the same fields as the other I Types but a different opcode, so it is the same instruction type
+        The isntruction that are I Types are:
+            addi    rd = rs1 + IMM (Sub isn't needed because IMM can be negative)
+            xori    rd = rs1 ^ IMM
+            ori     rd = rs1 | IMM
+            andi    rd = rs1 & IMM
+            jalr    rd = PC + 4; PC = rs1 + IMM
+    L - IMM[6:0] (15:9) - rs1 (8:6) - rd (5:3) - OpCode (2:0)
+        L type is exclusively used for load word. In RISC-V lw is an I type, but separating the instruction allows its immediate to be 7 bits rather than 5.
+        Additionally, the immediate is shifted before being added to the register because memory only needs to be grabbed in 2 byte chunks, not 1 byte.
+        This allows load word to reach from rs1-128 to rs1+126, or a 128 word range around rs1
+        The only instruction that is an L Type is:
+            lw      rd = Mem[rs1+IMM]
+    S - IMM [6:3] (15:12) - rs2 (11:9) - rs1 (8:6) - IMM[2:0] (5:3) - OpCode (2:0)
+        S Types include branchs and store word. These are grouped because both care about two registers, an immediate, and don't store anything back to the reg file.
+        Similarly to L Types, the immediate value is shifted before any operations happen with it because we only care about 2 bytes chunks.
+        This allows branches to reach from pc-128 to pc+126 or 128 instructions around pc.
+        For store word, it has the same range as load word.
+        The instructions that are S Types are:
+            sw      Mem[rs1+IMM] = rs2
+            beq     if(rs1 == rs2) PC = PC + IMM
+            bne     if(rs1 != rs2) PC = PC + IMM
+            blt     if(rs1 <  rs2) PC = PC + IMM
+            bge     if(rs1 >= rs2) PC = PC + IMM
+    U - IMM[10:0] (15:5) - rd[1:0] (4:3) - OpCode (2:0)
+        The only U Type is load upper immediate. To make it function the same was it does in RISC-V, sacrifices had to be made.
+        Because the I Type immediate is only 5 bits, the upper 11 bits need to be set with lui. To make this fit, 1 bit was cut from the rd.
+        This bit is forced high by a control line, meaning lui can only work for x4-7. This is not a huge disadvantage however.
+        Those are 4 of the 5 registers that will be regualarly used for arithmatic, and if another register needs loaded, a temp can be loaded then moved into x0-3
+        The only instruction that is a U Type is:
+            lui     rd = IMM << 5
+    UJ - IMM[9:0] (15:6) - rd (5:3) - OpCode (2:0)
+        The only UJ Type is jump and link. It only needs an rd to store the return address, so the rest of the space is used for a large immediate.
+        The only instruction that is a UJ Type is:
+            jal     rd = PC + 4; PC = PC + IMM
+
+That's the basic rundown of the instructions. Changes may be made in the future.
+Currently, I'm thinking the order of bits in immediates might change for S, L, and UJ types as well as splitting out jalr from I.
+This could allow a simpler IMMGEN, but I'm not sure and it's an easy enough to change, so I'll wait and see.
