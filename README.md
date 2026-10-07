@@ -15,7 +15,7 @@
 <h3 align="center">RRISC-16</h3>
 
   <p align="center">
-    Ridiculously Reduces Instruction Set Computer. A 16 bit version of the RISC-V architecture.
+    Ridiculously Reduced Instruction Set Computer. A 16 bit version of the RISC-V architecture.
     <br />
     <a href="https://github.com/cmcmullen413/RRISC-16"><strong>Explore the docs »</strong></a>
     <br />
