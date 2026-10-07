@@ -1,0 +1,100 @@
+The implementatin of this computer will use a single cycle.
+This means one instruction is fully completed by each rising edge of the clock.
+To do this, the following components will be clocked, either on the rising or falling edge:
+    Instruction Memory (rising)     - At the start of each cycle, a new instruction will be read from memory
+    Data Memory (falling)           - Mem read and write are both clocked to the falling edge. This allows a load word to store data into a register on the next rising edge
+    Register Write (rising)         - Stores the result from the ALU or the output from memory at the end of each cycle.
+                                      Reg Read is async so ALU calculations can be done by the time memory has to read/write
+
+Organized on the respective clock edges, along with the unclocked components, the order of operations will look something like this:
+    Clock High (Sync)
+        Instruction Read
+
+    High to Low Transition (Asyc)
+        Register Read - This has to be async to allow memory read on the falling edge. Without this, it is impossible to complete a load word instruction in one cycle
+        Control
+        Immediate Generation
+        ALU Operations
+
+    Clock Low (Sync)
+        Memory Read/Write
+        Program Counter Write
+        Link Address Write - This stores PC + 4 for an extra cycle when it needs to be written into memory after a jump instruction. Without this PC+8 would be stored instead.
+
+    Low to High Transition (Async)
+        Register Write
+
+The data path for this computer will be very similar to a standard single cycle RISC-V computer. A rough sketch can be seen in Data_Path.jpeg.
+The basic hdl for each instruction type is:
+
+R-Type
+    newPC = PC + 2
+    PC = newPC
+    instr = InstrMem[PC]
+    a = RegFile[instr[8:6]]
+    b = RegFile[instr[11:9]]
+    result = ALU(a, b) // Operation controlled by the control unit and an ALU control unit
+    RegFile[instr[5:3]] = result
+
+I-Type (not jalr)
+    newPC = PC + 2
+    PC = newPC
+    instr = InstrMem[PC]
+    a = RegFile[instr[8:6]]
+    imm = ImmGen(instr) // The immeditate generator correctly puts together the immediate based on the opcode
+    result = ALU(a, imm) // Operation controlled by the control unit and an ALU control unit
+    RegFile[instr[5:3]] = result
+I-Type (jalr)
+    newPC = PC + imm
+    PC = newPC
+    instr = InstrMem[PC]
+    imm = ImmGen(instr)
+    linkAddr = PC + 2
+    RegFile[instr[5:3]] = linkAddr
+
+L-Type
+    newPC = PC + 2
+    PC = newPC
+    instr = InstrMem[PC]
+    a = RegFile[instr[8:6]]
+    imm = ImmGen(instr)
+    result = ALU(a, imm)
+    RegFile[instr[5:3]] = DataMem[result]
+
+S-Type (not sw)
+    if (branch) {
+        newPC = PC + imm
+    } else {
+        newPC = PC + 2
+    }
+    PC = newPC
+    a = RegFile[instr[8:6]]
+    b = RegFile[instr[11:9]]
+    imm =  ImmGen(instr)
+    result = ALU(a, b) // Will specifically be subtracting to compare values
+    branch = BranchDet(result)
+
+S-Type (sw)
+    newPC = PC + 2
+    PC = newPC
+    instr = InstrMem[PC]
+    a = RegFile[instr[8:6]]
+    b = RegFile[instr[11:9]]
+    imm = ImmGen(instr)
+    result = ALU(a, imm)
+    DataMem[result] = b
+
+U-Type
+    newPc = PC + 2
+    PC = newPC
+    instr = InstrMem[PC]
+    imm = ImmGen(instr)
+    result = ALU(0, imm)
+    RegFile[{1, instr[4:3]}] = result
+
+UJ-Type
+    newPC = PC + imm
+    PC = newPC
+    imm = ImmGen(instr)
+    linkAddr = PC + 2
+    RegFile[instr[5:3]] = linkAddr
