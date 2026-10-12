@@ -1,15 +1,21 @@
 // Dual Port Memory to be used for instruction and regular memory
-module DP_Memory
-
-// Reduced ADDR_WIDTH so my computer doesn't blow up
 //
-#(parameter DATA_WIDTH = 16, parameter ADDR_WIDTH = 8)
+// Reduced ADDR_WIDTH so my computer doesn't blow up
+// Real one will probably have a full 16 bit addr width
+module DP_Memory
+#(parameter DATA_WIDTH = 16, parameter ADDR_WIDTH = 12)
 (
-    input wire [DATA_WIDTH-1:0] in_a, in_b
-    input wire [ADDR_WIDTH-1:0] addr_a, addr_b,
-    input wire clk_a, clk_b, we_a, we_b,                // Two clocks allows for reading and writing of each port on different edges
-    output reg [DATA_WIDTH-1:0] out_a, out_b
-)
+    input [DATA_WIDTH-1:0] in_a, 
+    input [DATA_WIDTH-1:0] in_b,
+    input [ADDR_WIDTH-1:0] addr_a, 
+    input [ADDR_WIDTH-1:0] addr_b,
+    input clk_a,                            // Two clocks allows for reading and writing of each port on different edges
+    input clk_b, 
+    input we_a, 
+    input we_b,
+    output reg [DATA_WIDTH-1:0] out_a,
+    output reg [DATA_WIDTH-1:0] out_b
+);
 
 // Declare the RAM
 reg [DATA_WIDTH-1:0] ram[2**ADDR_WIDTH-1:0];
@@ -17,8 +23,8 @@ reg [DATA_WIDTH-1:0] ram[2**ADDR_WIDTH-1:0];
 initial begin
     // Currently just starts everything as zeros
     integer i;
-    for (i = 0; i < 2**ADDR_WIDTH-1; i = i + 1) begin
-        rom[i] = {DATA_WIDTH{0}};
+    for (i = 0; i < 2**ADDR_WIDTH; i = i + 1) begin
+        ram[i] = {DATA_WIDTH{1'b0}};
     end
     // TODO: Make this load from a text file
 end
