@@ -3,7 +3,7 @@
 // Reduced ADDR_WIDTH so my computer doesn't blow up
 // Real one will probably have a full 16 bit addr width
 module DP_Memory
-#(parameter DATA_WIDTH = 16, parameter ADDR_WIDTH = 12)
+#(parameter DATA_WIDTH = 16, parameter ADDR_WIDTH = 16)
 (
     input [DATA_WIDTH-1:0] in_a, 
     input [DATA_WIDTH-1:0] in_b,
