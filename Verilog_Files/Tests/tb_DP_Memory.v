@@ -49,7 +49,7 @@ initial begin
     // Test: Check initialazation to 0
     testNum = testNum + 1;
     total = total + 1;
-    $display("Test %d: Check initialized to 0", testNum\);
+    $display("Test %d: Check initialized to 0", testNum);
     // Set addresses arbitrarily
     ADDR_A = 16'h00000000;
     ADDR_B = 16'hFFFFFFFF;
@@ -95,7 +95,7 @@ initial begin
     // Test: Write to side A only, check B doesn't update
     testNum = testNum + 1;
     total = total + 1;
-    $display("Test 3: Write to side A only and check B doesn't change");
+    $display("Test %d: Write to side A only and check B doesn't change", testNum);
     // Set input value for A arbitrarily
     IN_A = 16'hEFEFABAB;
     // Wait till the next clock cycle
@@ -118,7 +118,7 @@ initial begin
     // Test: Write to side B only, check same addr A updates at the same time
     testNum = testNum + 1;
     total = total + 1;
-    $display("Test 4: Write to side b only and check A with the same address changes at the same time");
+    $display("Test %d: Write to side b only and check A with the same address changes at the same time", testNum);
     // Set input value for B arbitrarily
     IN_A = 16'hABCDEF00;
     // Set the address for A to the same as B

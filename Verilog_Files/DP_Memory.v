@@ -20,9 +20,9 @@ module DP_Memory
 // Declare the RAM
 reg [DATA_WIDTH-1:0] ram[2**ADDR_WIDTH-1:0];
 
+integer i;
 initial begin
     // Currently just starts everything as zeros
-    integer i;
     for (i = 0; i < 2**ADDR_WIDTH; i = i + 1) begin
         ram[i] = {DATA_WIDTH{1'b0}};
     end
