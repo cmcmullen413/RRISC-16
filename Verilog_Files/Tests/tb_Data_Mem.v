@@ -17,7 +17,7 @@ reg WE;
 wire [15:0] OUT;
 
 Instr_Memory mem(
-    .in(IN)
+    .in(IN),
     .addr(ADDR),
     .we(WE),
     .out(OUT),
@@ -35,7 +35,7 @@ initial begin
     $display("Starting Instruction Memory Tests");
 
     // Explicitly set WE to low
-    WE = 1'b0
+    WE = 1'b0;
 
     @ (negedge CLK)
     // Test: Check initialazation to 0 #1

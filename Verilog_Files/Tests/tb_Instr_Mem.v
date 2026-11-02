@@ -17,7 +17,7 @@ wire [15:0] OUT;
 Instr_Memory mem(
     .addr(ADDR),
     .out(OUT),
-    .clk(CLK),
+    .clk(CLK)
 );
 
 // Track the passing tests
@@ -82,11 +82,11 @@ initial begin
     end
 
     // Feature not implemented yet
-    $display("LOAD FROM FILE NOT YET IMPLEMENTED")
+    $display("LOAD FROM FILE NOT YET IMPLEMENTED");
 
     // Let the last clock cycle display, then stop the sim
     @ (posedge CLK)
-    $display("%d/%d Tests Passed", passed, testNum)
+    $display("%d/%d Tests Passed", passed, testNum);
     $stop(0);
 end
 
