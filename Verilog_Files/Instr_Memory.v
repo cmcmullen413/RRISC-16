@@ -2,11 +2,9 @@
 module Instr_Memory
 #(parameter DATA_WIDTH = 16, parameter ADDR_WIDTH = 8)
 (
-    input [DATA_WIDTH-1:0] in,
-    input [ADDR_WIDTH-1:0] addr, 
-    input clk,
-    input we, 
-    output reg [DATA_WIDTH-1:0] out
+    input [ADDR_WIDTH-1:0] addr,
+    output reg [DATA_WIDTH-1:0] out,
+    input clk
 );
 
 // Declare the RAM
