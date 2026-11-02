@@ -4,9 +4,9 @@ module Data_Memory
 (
     input [DATA_WIDTH-1:0] in,
     input [ADDR_WIDTH-1:0] addr, 
-    input clk,
     input we, 
-    output reg [DATA_WIDTH-1:0] out
+    output reg [DATA_WIDTH-1:0] out,
+    input clk
 );
 
 // Declare the RAM
