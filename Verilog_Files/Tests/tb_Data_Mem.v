@@ -32,7 +32,7 @@ integer testNum = 0;
 integer expected;
 
 initial begin
-    $display("Starting Instruction Memory Tests");
+    $display("Starting Data Memory Tests");
 
     // Explicitly set WE to low
     WE = 1'b0;
