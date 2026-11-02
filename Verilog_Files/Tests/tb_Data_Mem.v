@@ -16,7 +16,7 @@ reg [15:0] ADDR;
 reg WE;
 wire [15:0] OUT;
 
-Instr_Memory mem(
+Data_Memory mem(
     .in(IN),
     .addr(ADDR),
     .we(WE),
