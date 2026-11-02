@@ -1,6 +1,6 @@
 `timescale 1ps/1ps
 
-module tb_Instruction_Memory ();
+module tb_DP_Memory ();
 
 // Start a clock
 reg CLK;
@@ -36,8 +36,8 @@ integer passed = 0;
 // Track the test number
 integer testNum = 0;
 // Used to store values expected as outputs for the tests
-integer expectedA = 0;
-integer expectedB = 0;
+integer expectedA;
+integer expectedB;
 
 initial begin
     $display("Starting Dual Port Memory Tests");
@@ -46,19 +46,20 @@ initial begin
     WE_A = 1'b0;
     WE_B = 1'b0;
 
+    @ (negedge CLK)
     // Test: Check initialazation to 0
     testNum = testNum + 1;
     total = total + 1;
     $display("Test %d: Check initialized to 0", testNum);
     // Set addresses arbitrarily
-    ADDR_A = 16'h00000000;
-    ADDR_B = 16'hFFFFFFFF;
+    ADDR_A = 16'h0000;
+    ADDR_B = 16'hFFFF;
     // Wait till the next clock cycle
     @ (posedge CLK)
     #5 // Wait a bit of time for propagation
     // Check the values
-    expectedA = 16'h00000000;
-    expectedB = 16'h00000000;
+    expectedA = 16'h0000;
+    expectedB = 16'h0000;
     if (OUT_A != expectedA) begin
         $display("Test %d_A failed. Expected %d | Recieved %d", testNum, expectedA, OUT_A);
     end
@@ -69,19 +70,23 @@ initial begin
         passed = passed + 1;
     end
 
+    @ (negedge CLK)
     // Test: Write to both sides
     testNum = testNum + 1;
     total = total + 1;
     $display("Test %d: Write to both sides", testNum);
     // Set input values arbitrarily
-    IN_A = 16'hABCD1234;
-    IN_B = 16'h6789CDEF;
+    IN_A = 16'h1234;
+    IN_B = 16'hCDEF;
+    // Set write signals high
+    WE_A = 1'b1;
+    WE_B = 1'b1;
     // Wait till the next clock cycle
     @ (posedge CLK)
     #5 // Wait a bit of time for propagation
     // Check the values
-    expectedA = 16'hABCD1234;
-    expectedB = 16'h6789CDEF;
+    expectedA = 16'h1234;
+    expectedB = 16'hCDEF;
     if (OUT_A != expectedA) begin
         $display("Test %d_A failed. Expected %d | Recieved %d", testNum, expectedA, OUT_A);
     end
@@ -92,21 +97,24 @@ initial begin
         passed = passed + 1;
     end
 
+    @ (negedge CLK)
     // Test: Write to side A only, check B doesn't update
     testNum = testNum + 1;
     total = total + 1;
     $display("Test %d: Write to side A only and check B doesn't change", testNum);
     // Set input value for A arbitrarily
-    IN_A = 16'hEFEFABAB;
+    IN_A = 16'hABAB;
+    // Set B's write low
+    WE_B = 1'b0;
     // Wait till the next clock cycle
     @ (posedge CLK)
     #5 // Wait a bit of time for propagation
     // Check the values
-    expectedA = 16'hEFEFABAB;
-    // B shoulf not change from last time
-    expectedB = 16'h6789CDEF;
+    expectedA = 16'hABAB;
+    // B should not change from last time
+    expectedB = 16'hCDEF;
     if (OUT_A != expectedA) begin
-        $display("Test %d_A failed. Expected %d | Recieved %d", testNum, expectedA, OUT_A);
+        $display("Tdest %d_A failed. Expected %d | Recieved %d", testNum, expectedA, OUT_A);
     end
     if (OUT_B != expectedB) begin
         $display("Test %d_B failed. Expected %d | Recieved %d", testNum, expectedB, OUT_B);
@@ -115,21 +123,25 @@ initial begin
         passed = passed + 1;
     end
 
+    @ (negedge CLK)
     // Test: Write to side B only, check same addr A updates at the same time
     testNum = testNum + 1;
     total = total + 1;
     $display("Test %d: Write to side b only and check A with the same address changes at the same time", testNum);
     // Set input value for B arbitrarily
-    IN_A = 16'hABCDEF00;
+    IN_B = 16'hEF00;
     // Set the address for A to the same as B
-    ADDR_A = 16'hFFFFFFFF;
+    ADDR_A = 16'hFFFF;
+    // Set A's write low and B's high
+    WE_A = 1'b0;
+    WE_B = 1'b1;
     // Wait till the next clock cycle
     @ (posedge CLK)
     #5 // Wait a bit of time for propagation
     // Check the values
-    expectedA = 16'hABCDEF00;
-    // B shoulf not change from last time
-    expectedB = 16'hABCDEF00;
+    expectedA = 16'hEF00;
+    // B should update at the same time as A
+    expectedB = 16'hEF00;
     if (OUT_A != expectedA) begin
         $display("Test %d_A failed. Expected %d | Recieved %d", testNum, expectedA, OUT_A);
     end
@@ -142,6 +154,10 @@ initial begin
     
 
     $display("Finished Tests: %d of %d passed", passed, total);
+
+    // Let the last clock cycle display, then stop the sim
+    @ (posedge CLK)
+    $stop(0);
 end
 
 endmodule
