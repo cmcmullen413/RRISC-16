@@ -20,14 +20,20 @@ reg [15:0] REG[2**3-1:0];
 integer i;
 initial begin
     for (i = 0; i < 2**3; i = i + 1) begin
-        REG[i] = 16'h0000;
+        if (i == 2) begin
+            // sp starts as 0xFFFF not 0
+            REG[i] = 16'hFFFF;
+        end else begin
+            REG[i] = 16'h0000;
+        end
     end
 end
 
 // Write synced to the posedge
 always @(posedge clk) begin
     // If we is high, update the value at rd
-    if (we == 1'b1) begin
+    // Cannot write to rd, it is always 0
+    if (we == 1'b1 && rd != 3'b000) begin
         REG[rd] <= write_data;
         // If rd == rs1 or rd == rs2, update the output so async reads properly
         if (rd == rs1) begin
