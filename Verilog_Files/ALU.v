@@ -3,6 +3,16 @@
 // Funct may change, depends on exect implementation
 // But the funct 3 is either the f2 and fr from the instruction
 //   or it is add for mem instruction or sub for branches
+
+module ALU(
+    // Inputs and outputs
+    input wire signed [15:0] a,
+    input wire signed [15:0] b,
+    output reg signed [15:0] out,
+    // Control wires
+    input wire [2:0] funct
+);
+
 //  Operation | ALUfunct
 parameter add_op = 3'b000;
 parameter sub_op = 3'b100;
@@ -12,15 +22,6 @@ parameter and_op = 3'b011;
 parameter sll_op = 3'b101;
 parameter srl_op = 3'b110;
 parameter sra_op = 3'b111;
-
-module ALU(
-    // Inputs and outputs
-    input wire [15:0] a,
-    input wire [15:0] b,
-    output reg [15:0] out,
-    // Control wires
-    input wire [2:0] funct
-);
 
 always @(a,b,funct) begin
     case (funct)

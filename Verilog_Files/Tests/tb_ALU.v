@@ -1,5 +1,7 @@
 `timescale 1ps/1ps
 
+module tb_ALU ();
+
 parameter add_op = 3'b000;
 parameter sub_op = 3'b100;
 parameter xor_op = 3'b001;
@@ -8,8 +10,6 @@ parameter and_op = 3'b011;
 parameter sll_op = 3'b101;
 parameter srl_op = 3'b110;
 parameter sra_op = 3'b111;
-
-module tb_ALU ();
 
 // Inputs and outputs to the module
 reg [15:0] A, B;
@@ -154,8 +154,6 @@ initial begin
         passed = passed + 1;
     end
 
-    // Let the last clock cycle display, then stop the sim
-    @ (posedge CLK)
     $display("%d/%d Tests Passed", passed, testNum);
     $stop(0);
 end
