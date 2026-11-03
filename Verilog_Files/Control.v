@@ -111,16 +111,28 @@ always @(opcode) begin
             lurd <= 1'bx;
         end
     Jump_opcode: begin
-            regWrite <= 1'b0;
+            regWrite <= 1'b1;
             memRead <= 1'bx;
             memWrite <= 1'b0;
-            ALUSrc <= 1'b0;
-            ALUOp <= 2'b11;
-            branch <= 1'b0;
-            jump <= 1'b0;
+            ALUSrc <= 1'bx;
+            ALUOp <= 2'bxx;
+            branch <= 1'bx;
+            jump <= 1'b1;
             jumpReg <= 1'b0;
-            regSrc <= 2'bxx;
-            lurd <= 1'bx;
+            regSrc <= 2'b11;
+            lurd <= 1'b0;
+        end
+    JumpReg_opcode: begin
+            regWrite <= 1'b1;
+            memRead <= 1'bx;
+            memWrite <= 1'b0;
+            ALUSrc <= 1'bx;
+            ALUOp <= 2'bxx;
+            branch <= 1'bx;
+            jump <= 1'bx;
+            jumpReg <= 1'b1;
+            regSrc <= 2'b11;
+            lurd <= 1'b0;
         end
     
     endcase
