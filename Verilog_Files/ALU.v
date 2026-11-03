@@ -9,6 +9,7 @@ module ALU(
     input wire signed [15:0] a,
     input wire signed [15:0] b,
     output reg signed [15:0] out,
+    output reg zero,
     // Control wires
     input wire [2:0] funct
 );
@@ -34,6 +35,8 @@ always @(a,b,funct) begin
     srl_op: out <= a>>b;
     sra_op: out <= a>>>b;
     endcase
+
+    zero <= (out == 16'h0000);
 end
 
 endmodule
