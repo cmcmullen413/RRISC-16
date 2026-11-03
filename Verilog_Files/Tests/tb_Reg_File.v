@@ -1,6 +1,6 @@
 `timescale 1ps/1ps
 
-module tb_Instr_Mem ();
+module tb_Reg_File ();
 
 // Start a clock
 reg CLK;
