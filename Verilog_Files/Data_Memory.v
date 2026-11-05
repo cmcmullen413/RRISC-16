@@ -4,7 +4,8 @@ module Data_Memory
 (
     input wire [DATA_WIDTH-1:0] in,
     input wire [ADDR_WIDTH-1:0] addr, 
-    input wire we, 
+    input wire we,
+    input wire re,
     output reg [DATA_WIDTH-1:0] out,
     input wire clk,
     input wire reset
@@ -35,7 +36,9 @@ always @ (posedge clk) begin
 end
 // Update the output on the clock edge
 always @ (posedge clk) begin
-    out <= ram[addr];
+    if (re == 1'b1) begin
+        out <= ram[addr];
+    end
 end
 
 endmodule
