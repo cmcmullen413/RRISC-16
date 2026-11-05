@@ -2,11 +2,12 @@
 module Data_Memory
 #(parameter DATA_WIDTH = 16, parameter ADDR_WIDTH = 8)
 (
-    input [DATA_WIDTH-1:0] in,
-    input [ADDR_WIDTH-1:0] addr, 
-    input we, 
+    input wire [DATA_WIDTH-1:0] in,
+    input wire [ADDR_WIDTH-1:0] addr, 
+    input wire we, 
     output reg [DATA_WIDTH-1:0] out,
-    input clk
+    input wire clk,
+    input wire reset
 );
 
 // Declare the RAM
@@ -22,7 +23,13 @@ end
 
 // Update the input on the clock edge
 always @ (posedge clk) begin
-    if (we) begin
+    if (reset == 1'b1) begin
+        // Initialize everything to 0
+        for (i = 0; i < 2**ADDR_WIDTH; i = i + 1) begin
+            ram[i] = {DATA_WIDTH{1'b0}};
+        end
+    end
+    else if (we == 1'b1) begin
         ram[addr] <= in;
     end
 end
