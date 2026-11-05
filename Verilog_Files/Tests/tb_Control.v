@@ -25,7 +25,7 @@ Control control(
     .memRead(MEMREAD),
     .memWrite(MEMWRITE),
     .ALUSrc(ALUSRC),
-    .ALUop(ALUOP),
+    .ALUOp(ALUOP),
     .branch(BRANCH),
     .jump(JUMP),
     .jumpReg(JUMPREG),
@@ -33,12 +33,15 @@ Control control(
     .lurd(LURD)
 );
 
+wire [11:0] CONTROL_LINES;
+assign CONTROL_LINES = {REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD};
+
 // Track the passing tests
 integer passed = 0;
 // Track the test number
 integer testNum = 0;
 // Used to store values expected as outputs for the tests
-integer expected;
+reg [11:0] expected;
 
 initial begin
     $display("Starting Control Tests");
@@ -50,8 +53,8 @@ initial begin
     #5 // Wait a bit of time for propagation
     // Check the control lines
     expected = 12'b1x0000000000;
-    if ({REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD} != expected) begin
-        $display("Test %d failed. Expected %d | Recieved %d", testNum, expected, {REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD});
+    if (CONTROL_LINES != expected) begin
+        $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, CONTROL_LINES);
     end else begin
         passed = passed + 1;
     end
@@ -60,12 +63,12 @@ initial begin
     // Test: Imm test
     testNum = testNum + 1;
     $display("Test %d: Imm Type", testNum);
-    OPCODE = Reg_opcode;
+    OPCODE = Imm_opcode;
     #5 // Wait a bit of time for propagation
     // Check the control lines
     expected = 12'b1x0100000000;
-    if ({REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD} != expected) begin
-        $display("Test %d failed. Expected %d | Recieved %d", testNum, expected, {REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD});
+    if (CONTROL_LINES != expected) begin
+        $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, CONTROL_LINES);
     end else begin
         passed = passed + 1;
     end
@@ -73,12 +76,12 @@ initial begin
     // Test: LW test
     testNum = testNum + 1;
     $display("Test %d: Load Word Type", testNum);
-    OPCODE = Reg_opcode;
+    OPCODE = LW_opcode;
     #5 // Wait a bit of time for propagation
     // Check the control lines
     expected = 12'b110110000010;
-    if ({REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD} != expected) begin
-        $display("Test %d failed. Expected %d | Recieved %d", testNum, expected, {REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD});
+    if (CONTROL_LINES != expected) begin
+        $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, CONTROL_LINES);
     end else begin
         passed = passed + 1;
     end
@@ -86,12 +89,12 @@ initial begin
     // Test: SW test
     testNum = testNum + 1;
     $display("Test %d: Store Word Type", testNum);
-    OPCODE = Reg_opcode;
+    OPCODE = SW_opcode;
     #5 // Wait a bit of time for propagation
     // Check the control lines
     expected = 12'b0x1110000xxx;
-    if ({REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD} != expected) begin
-        $display("Test %d failed. Expected %d | Recieved %d", testNum, expected, {REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD});
+    if (CONTROL_LINES != expected) begin
+        $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, CONTROL_LINES);
     end else begin
         passed = passed + 1;
     end
@@ -99,12 +102,12 @@ initial begin
     // Test: LUI test
     testNum = testNum + 1;
     $display("Test %d: Load Upper Immediate Type", testNum);
-    OPCODE = Reg_opcode;
+    OPCODE = LUI_opcode;
     #5 // Wait a bit of time for propagation
     // Check the control lines
     expected = 12'b1x0xxx000101;
-    if ({REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD} != expected) begin
-        $display("Test %d failed. Expected %d | Recieved %d", testNum, expected, {REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD});
+    if (CONTROL_LINES != expected) begin
+        $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, CONTROL_LINES);
     end else begin
         passed = passed + 1;
     end
@@ -112,12 +115,12 @@ initial begin
     // Test: Branch test
     testNum = testNum + 1;
     $display("Test %d: Branch Type", testNum);
-    OPCODE = Reg_opcode;
+    OPCODE = Branch_opcode;
     #5 // Wait a bit of time for propagation
     // Check the control lines
     expected = 12'b0x0011100xxx;
-    if ({REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD} != expected) begin
-        $display("Test %d failed. Expected %d | Recieved %d", testNum, expected, {REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD});
+    if (CONTROL_LINES != expected) begin
+        $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, CONTROL_LINES);
     end else begin
         passed = passed + 1;
     end
@@ -125,12 +128,12 @@ initial begin
     // Test: Jump test
     testNum = testNum + 1;
     $display("Test %d: Jump Type", testNum);
-    OPCODE = Reg_opcode;
+    OPCODE = Jump_opcode;
     #5 // Wait a bit of time for propagation
     // Check the control lines
     expected = 12'b1x0xxxx10110;
-    if ({REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD} != expected) begin
-        $display("Test %d failed. Expected %d | Recieved %d", testNum, expected, {REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD});
+    if (CONTROL_LINES != expected) begin
+        $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, CONTROL_LINES);
     end else begin
         passed = passed + 1;
     end
@@ -138,12 +141,12 @@ initial begin
     // Test: Jump Reg test
     testNum = testNum + 1;
     $display("Test %d: Jump Reg Type", testNum);
-    OPCODE = Reg_opcode;
+    OPCODE = JumpReg_opcode;
     #5 // Wait a bit of time for propagation
     // Check the control lines
     expected = 12'b1x0xxxxx1110;
-    if ({REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD} != expected) begin
-        $display("Test %d failed. Expected %d | Recieved %d", testNum, expected, {REGWRITE, MEMREAD, MEMWRITE, ALUSRC, ALUOP, BRANCH, JUMP, JUMPREG, REGSRC, LURD});
+    if (CONTROL_LINES != expected) begin
+        $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, CONTROL_LINES);
     end else begin
         passed = passed + 1;
     end

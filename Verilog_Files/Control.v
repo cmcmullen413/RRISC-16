@@ -55,7 +55,7 @@ always @(opcode) begin
             memRead <= 1'bx;
             memWrite <= 1'b0;
             ALUSrc <= 1'b1;
-            ALUOp <= 2'b01;
+            ALUOp <= 2'b00;
             branch <= 1'b0;
             jump <= 1'b0;
             jumpReg <= 1'b0;
@@ -104,7 +104,7 @@ always @(opcode) begin
             memWrite <= 1'b0;
             ALUSrc <= 1'b0;
             ALUOp <= 2'b11;
-            branch <= 1'b0;
+            branch <= 1'b1;
             jump <= 1'b0;
             jumpReg <= 1'b0;
             regSrc <= 2'bxx;
@@ -134,7 +134,6 @@ always @(opcode) begin
             regSrc <= 2'b11;
             lurd <= 1'b0;
         end
-    
     endcase
 end
 
