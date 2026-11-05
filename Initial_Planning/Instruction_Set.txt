@@ -35,7 +35,7 @@ Finally, the design of the instruction types.
 My design has 6 types: R, I, L, S, U, UJ
 These are very similar to the RISC-V equivalents, but without the bit stiching for branches and jumps and shorter funct options.
 The types are defined as follows:
-    R - f2 (15:14) - fr (13:12) - rs2 (11:9) - rs1 (8:6) - rd (5:3) - OpCode (2:0)
+    R - f2 (15:14) - fr (13) - pad (12) - rs2 (11:9) - rs1 (8:6) - rd (5:3) - OpCode (2:0)
         R Types operate on two registers (rs1, rs2) and store the result into the third (rd).
         The f2 and fr bits allow for differentiation between the 8 ALU operations.
         The instructions that are R Types are:
