@@ -6,7 +6,7 @@ module Processor(
 //  PC Register
 // Updates every falling edge with the new value
 Register PC(
-    .d(),
+    .d(pcSrcMux.out),
     .clk(~clk),
     .we(1'b1),
     .reset(reset),
@@ -53,7 +53,7 @@ Reg_File regFile(
     .rs2(instrMem.out[11:9]),
     .data_b(),
     .rd(writeReg),
-    .write_data(),
+    .write_data(regSrcMux.out),
     .we(control.regWrite),
     .clk(clk),
     .reset(reset)
@@ -98,6 +98,26 @@ Branch_Detect branchDetect(
     .branchControl()
 );
 
+
+// PC Source Muxes
+// First one chooses between pc+1 and pc+imm
+//  Controlled by branchControl | jump
+// Second one chooses between the first output and reg_a+imm
+//  Controlled by jumpReg
+Mux_2to1 branchJumpMux(
+    .in_0(PC.q + 1),
+    .in_1(PC.q + immGen.imm),
+    .control(branchDetect.branchControl | control.jump),
+    .out()
+);
+Mux_2to1 pcSrcMux(
+    .in_0(branchJumpMux.out),
+    .in_1(regFile.data_a + immGen.imm),
+    .control(contro.jumpReg),
+    .out()
+);
+
+
 // Data Memory
 Data_Memory dataMem(
     .in(regFile.data_b),
@@ -120,6 +140,18 @@ Register linkAddr(
     we(1'b1),
     reset(reset),
     .q()
+);
+
+
+// RegFile Input Mux
+// Controls what value gets passed into the regfile to be stored into rd
+Mux_4to1 regSrcMux(
+    .in_0(alu.out),
+    .in_1(dataMem.out),
+    .in_2(immGen.imm),
+    .in_3(linkAddr.q),
+    .control(control.regSrc),
+    .out()
 );
 
 endmodule
