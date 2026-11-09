@@ -55,9 +55,9 @@ The types are defined as follows:
         The other I Type is jump and link register. This uses the same fields as the other I Types but a different opcode, so it is the same instruction type
         The isntruction that are I Types are:
             addi    rd = rs1 + IMM (Sub isn't needed because IMM can be negative)
-            xori    rd = rs1 ^ IMM
-            ori     rd = rs1 | IMM
-            andi    rd = rs1 & IMM
+            slli    rd = rs1 << rs2
+            srli    rd = rs1 >> rs2 (filled with zeros)
+            srai    rd = rs1 >> rs2 (sign extended)
             jalr    rd = PC + 4; PC = rs1 + IMM
     L - IMM[6:0] (15:9) - rs1 (8:6) - rd (5:3) - OpCode (2:0)
         L type is exclusively used for load word. In RISC-V lw is an I type, but separating the instruction allows its immediate to be 7 bits rather than 5.
