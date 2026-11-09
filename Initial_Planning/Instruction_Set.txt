@@ -76,6 +76,8 @@ The types are defined as follows:
             bne     if(rs1 != rs2) PC = PC + IMM
             blt     if(rs1 <  rs2) PC = PC + IMM
             bge     if(rs1 >= rs2) PC = PC + IMM
+    SB - Added to take out branches from S. They are slightly different because branches actually need an f2.
+        Same layout except bits 15:14 are f2 instead of part of the immediate. This makes the branch range actually 32 instructions around pc.
     U - IMM[10:0] (15:5) - rd[1:0] (4:3) - OpCode (2:0)
         The only U Type is load upper immediate. To make it function the same was it does in RISC-V, sacrifices had to be made.
         Because the I Type immediate is only 5 bits, the upper 11 bits need to be set with lui. To make this fit, 1 bit was cut from the rd.
