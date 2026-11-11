@@ -52,19 +52,19 @@ The types are defined as follows:
         The f2 bits allow for differention between 4 ALU operations. Removing the shift operators and subtract allows for a longer immediate than otherwise.
         With 5 bits, the immediate is a sign extended value from -16 to 15.
         While this range isn't the greatest, it allows for small arthimatic and value loading without using multiple instructions to load a full 16 bit word.
-        The other I Type is jump and link register. This uses the same fields as the other I Types but a different opcode, so it is the same instruction type
-        The isntruction that are I Types are:
+        The instructions that are I Types are:
             addi    rd = rs1 + IMM (Sub isn't needed because IMM can be negative)
             slli    rd = rs1 << rs2
             srli    rd = rs1 >> rs2 (filled with zeros)
             srai    rd = rs1 >> rs2 (sign extended)
-            jalr    rd = PC + 4; PC = rs1 + IMM
     L - IMM[6:0] (15:9) - rs1 (8:6) - rd (5:3) - OpCode (2:0)
-        L type is exclusively used for load word. In RISC-V lw is an I type, but separating the instruction allows its immediate to be 7 bits rather than 5.
+        L type is used for load word. In RISC-V lw is an I type, but separating the instruction allows its immediate to be 7 bits rather than 5.
+        The other L Type is jump and link register. This uses the same fields as the other I Types but a different opcode, so it is the same instruction type
         Additionally, the immediate is shifted before being added to the register because memory only needs to be grabbed in 2 byte chunks, not 1 byte.
         This allows load word to reach from rs1-128 to rs1+126, or a 128 word range around rs1
-        The only instruction that is an L Type is:
+        The instructions that are L Types are:
             lw      rd = Mem[rs1+IMM]
+            jalr    rd = PC + 4; PC = rs1 + IMM
     S - IMM [6:3] (15:12) - rs2 (11:9) - rs1 (8:6) - IMM[2:0] (5:3) - OpCode (2:0)
         S Types include branchs and store word. These are grouped because both care about two registers, an immediate, and don't store anything back to the reg file.
         Similarly to L Types, the immediate value is shifted before any operations happen with it because we only care about 2 bytes chunks.
