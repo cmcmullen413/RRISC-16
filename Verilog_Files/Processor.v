@@ -42,7 +42,7 @@ Control control(
 
 // Combine the rd and loadUpperRd into the destination register
 wire [2:0] writeReg;
-assign writeReg = {instrMem.out[5]|control.lurd, instrMem.out[4:3]}
+assign writeReg = {instrMem.out[5]|control.lurd, instrMem.out[4:3]};
 
 // Register File
 // Asyncronusly reads rs1 and rs2
@@ -137,8 +137,8 @@ Data_Memory dataMem(
 Register linkAddr(
     .d(PC.q + 1),
     .clk(clk),
-    we(1'b1),
-    reset(reset),
+    .we(1'b1),
+    .reset(reset),
     .q()
 );
 
