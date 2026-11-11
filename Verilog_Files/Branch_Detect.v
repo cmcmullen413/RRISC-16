@@ -12,7 +12,9 @@ parameter lt_f2 = 2'b10;
 parameter ge_f2 = 2'b11;
 
 always @(branch, zero, msb, f2) begin
-    if (f2 == eq_f2) begin
+    if (~branch) begin
+        branchControl <= 1'b0;
+    end else if (f2 == eq_f2) begin
         branchControl <= zero;
     end else if (f2 == ne_f2) begin
         branchControl <= ~zero;

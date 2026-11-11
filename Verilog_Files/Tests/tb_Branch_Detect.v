@@ -1,6 +1,6 @@
 `timescale 1ps/1ps
 
-module tb_Branch_Control ();
+module tb_Branch_Detect ();
 
 parameter eq_f2 = 2'b00;
 parameter ne_f2 = 2'b01;
@@ -41,7 +41,7 @@ initial begin
     #5 // Wait a bit of time for propagation
     // Check the funct
     expected = 1'b0;
-    if (ALUFUNCT != expected) begin
+    if (BRANCHCONTROL != expected) begin
         $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, BRANCHCONTROL);
     end else begin
         passed = passed + 1;
@@ -56,7 +56,7 @@ initial begin
     #5 // Wait a bit of time for propagation
     // Check the funct
     expected = 1'b1;
-    if (ALUFUNCT != expected) begin
+    if (BRANCHCONTROL != expected) begin
         $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, BRANCHCONTROL);
     end else begin
         passed = passed + 1;
@@ -72,7 +72,7 @@ initial begin
     #5 // Wait a bit of time for propagation
     // Check the funct
     expected = 1'b0;
-    if (ALUFUNCT != expected) begin
+    if (BRANCHCONTROL != expected) begin
         $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, BRANCHCONTROL);
     end else begin
         passed = passed + 1;
@@ -87,7 +87,7 @@ initial begin
     #5 // Wait a bit of time for propagation
     // Check the funct
     expected = 1'b1;
-    if (ALUFUNCT != expected) begin
+    if (BRANCHCONTROL != expected) begin
         $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, BRANCHCONTROL);
     end else begin
         passed = passed + 1;
@@ -103,7 +103,7 @@ initial begin
     #5 // Wait a bit of time for propagation
     // Check the funct
     expected = 1'b0;
-    if (ALUFUNCT != expected) begin
+    if (BRANCHCONTROL != expected) begin
         $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, BRANCHCONTROL);
     end else begin
         passed = passed + 1;
@@ -118,7 +118,7 @@ initial begin
     #5 // Wait a bit of time for propagation
     // Check the funct
     expected = 1'b1;
-    if (ALUFUNCT != expected) begin
+    if (BRANCHCONTROL != expected) begin
         $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, BRANCHCONTROL);
     end else begin
         passed = passed + 1;
@@ -134,7 +134,7 @@ initial begin
     #5 // Wait a bit of time for propagation
     // Check the funct
     expected = 1'b0;
-    if (ALUFUNCT != expected) begin
+    if (BRANCHCONTROL != expected) begin
         $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, BRANCHCONTROL);
     end else begin
         passed = passed + 1;
@@ -149,7 +149,7 @@ initial begin
     #5 // Wait a bit of time for propagation
     // Check the funct
     expected = 1'b1;
-    if (ALUFUNCT != expected) begin
+    if (BRANCHCONTROL != expected) begin
         $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, BRANCHCONTROL);
     end else begin
         passed = passed + 1;
@@ -165,7 +165,7 @@ initial begin
     #5 // Wait a bit of time for propagation
     // Check the funct
     expected = 1'b0;
-    if (ALUFUNCT != expected) begin
+    if (BRANCHCONTROL != expected) begin
         $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, BRANCHCONTROL);
     end else begin
         passed = passed + 1;
