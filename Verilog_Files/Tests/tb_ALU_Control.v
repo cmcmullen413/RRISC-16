@@ -12,7 +12,7 @@ parameter srl_op = 3'b110;
 parameter sra_op = 3'b111;
 
 // Inputs and outputs to the module
-reg [1:0] ALUOp, F2;
+reg [1:0] ALUOP, F2;
 reg FR;
 wire [2:0] ALUFUNCT;
 
@@ -155,7 +155,7 @@ initial begin
     // Add
     testNum = testNum + 1;
     $display("Test %d: I-Type ALUOp - add", testNum);
-    ALUOP = 2'b00;
+    ALUOP = 2'b01;
     F2 = 2'b00;
     #5 // Wait a bit of time for propagation
     // Check the funct
@@ -168,7 +168,7 @@ initial begin
     // SLL
     testNum = testNum + 1;
     $display("Test %d: I-Type ALUOp - sll", testNum);
-    ALUOP = 2'b00;
+    ALUOP = 2'b01;
     F2 = 2'b01;
     #5 // Wait a bit of time for propagation
     // Check the funct
@@ -181,7 +181,7 @@ initial begin
     // SRL
     testNum = testNum + 1;
     $display("Test %d: I-Type ALUOp - srl", testNum);
-    ALUOP = 2'b00;
+    ALUOP = 2'b01;
     F2 = 2'b10;
     #5 // Wait a bit of time for propagation
     // Check the funct
@@ -194,7 +194,7 @@ initial begin
     // SRA
     testNum = testNum + 1;
     $display("Test %d: I-Type ALUOp - sra", testNum);
-    ALUOP = 2'b00;
+    ALUOP = 2'b01;
     F2 = 2'b11;
     #5 // Wait a bit of time for propagation
     // Check the funct
@@ -226,7 +226,7 @@ initial begin
     ALUOP = 2'b11;
     #5 // Wait a bit of time for propagation
     // Check the funct
-    expected = sub;
+    expected = sub_op;
     if (ALUFUNCT != expected) begin
         $display("Test %d failed. Expected %b | Recieved %b", testNum, expected, ALUFUNCT);
     end else begin

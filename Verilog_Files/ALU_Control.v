@@ -19,14 +19,14 @@ always @(ALUOp, f2, fr) begin
     // ALUOp == 00 -> look at f2 and fr
     if (ALUOp == 2'b00) begin
         case ({fr, f2})
-        2'b000: ALUfunct <= add_op;
-        2'b001: ALUfunct <= sll_op;
-        2'b010: ALUfunct <= srl_op;
-        2'b011: ALUfunct <= sra_op;
-        2'b100: ALUfunct <= sub_op;
-        2'b101: ALUfunct <= xor_op;
-        2'b110: ALUfunct <= or_op;
-        2'b111: ALUfunct <= and_op;
+        3'b000: ALUfunct <= add_op;
+        3'b001: ALUfunct <= sll_op;
+        3'b010: ALUfunct <= srl_op;
+        3'b011: ALUfunct <= sra_op;
+        3'b100: ALUfunct <= sub_op;
+        3'b101: ALUfunct <= xor_op;
+        3'b110: ALUfunct <= or_op;
+        3'b111: ALUfunct <= and_op;
         endcase
     end
     // ALUOp == 01 -> look at f2
