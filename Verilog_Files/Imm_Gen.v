@@ -18,12 +18,12 @@ always @(instr) begin
     case (opcode)
     Reg_opcode:     imm <= 16'h0000;
     Imm_opcode:     imm <= {{12{instr[13]}}, instr[12:9]};
-    LW_opcode:      imm <= {{10{instr[15]}}, instr[14:9]};
-    SW_opcode:      imm <= {{10{instr[15]}}, instr[14:12], instr[5:3]};
+    LW_opcode:      imm <= {{11{instr[15]}}, instr[14:9]};
+    SW_opcode:      imm <= {{11{instr[15]}}, instr[14:12], instr[5:3]};
     LUI_opcode:     imm <= {instr[15:5], 5'b00000};
-    Branch_opcode:  imm <= {{12{instr[13]}}, instr[12], instr[2:0]};
+    Branch_opcode:  imm <= {{12{instr[13]}}, instr[12], instr[5:3]};
     Jump_opcode:    imm <= {{7{instr[15]}}, instr[14:6]};
-    JumpReg_opcode: imm <= {{10{instr[15]}}, instr[14:9]};
+    JumpReg_opcode: imm <= {{11{instr[15]}}, instr[14:9]};
     endcase
 end
 

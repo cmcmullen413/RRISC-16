@@ -47,7 +47,7 @@ initial begin
     // Negative Immediate
     testNum = testNum + 1;
     $display("Test %d: Imm Type Negative Immediate", testNum);
-    INSTR = {2'b00, 5'b1000, 3'b000, 3'b000, Imm_opcode};
+    INSTR = {2'b00, 5'b10000, 3'b000, 3'b000, Imm_opcode};
     #5 // Wait a bit of time for propagation
     // Check the immediate
     expected = 16'hFFF0;
@@ -74,10 +74,10 @@ initial begin
     // Negative Immediate
     testNum = testNum + 1;
     $display("Test %d: LW Type Negative Immediate", testNum);
-    INSTR = {7'b100000, 3'b000, 3'b000, LW_opcode};
+    INSTR = {7'b1000000, 3'b000, 3'b000, LW_opcode};
     #5 // Wait a bit of time for propagation
     // Check the immediate
-    expected = 16'hFFB0;
+    expected = 16'hFFC0;
     if (IMM != expected) begin
         $display("Test %d failed. Expected %d | Recieved %d", testNum, expected, IMM);
     end else begin
@@ -104,7 +104,7 @@ initial begin
     INSTR = {4'b1000, 3'b000, 3'b000, 3'b000, SW_opcode};
     #5 // Wait a bit of time for propagation
     // Check the immediate
-    expected = 16'hFFB0;
+    expected = 16'hFFC0;
     if (IMM != expected) begin
         $display("Test %d failed. Expected %d | Recieved %d", testNum, expected, IMM);
     end else begin
@@ -170,7 +170,7 @@ initial begin
     // Positive Immediate
     testNum = testNum + 1;
     $display("Test %d: Jump Type Positive Immediate", testNum);
-    INSTR = {10'b01010101010, 3'b000, Jump_opcode};
+    INSTR = {10'b0101010101, 3'b000, Jump_opcode};
     #5 // Wait a bit of time for propagation
     // Check the immediate
     expected = 16'h0155;
@@ -182,7 +182,7 @@ initial begin
     // Negative Immediate
     testNum = testNum + 1;
     $display("Test %d: Jump Type Negative Immediate", testNum);
-    INSTR = {10'b10101010101, 3'b000, Jump_opcode};
+    INSTR = {10'b1010101010, 3'b000, Jump_opcode};
     #5 // Wait a bit of time for propagation
     // Check the immediate
     expected = 16'hFEAA;
@@ -209,10 +209,10 @@ initial begin
     // Negative Immediate
     testNum = testNum + 1;
     $display("Test %d: Jump Reg Type Negative Immediate", testNum);
-    INSTR = {7'b100000, 3'b000, 3'b000, JumpReg_opcode};
+    INSTR = {7'b1000000, 3'b000, 3'b000, JumpReg_opcode};
     #5 // Wait a bit of time for propagation
     // Check the immediate
-    expected = 16'hFFB0;
+    expected = 16'hFFC0;
     if (IMM != expected) begin
         $display("Test %d failed. Expected %d | Recieved %d", testNum, expected, IMM);
     end else begin
