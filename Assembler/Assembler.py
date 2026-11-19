@@ -26,9 +26,11 @@ def main():
 
     bin = assemble(assembly)
 
+    # TODO Make the output be in binary or hex
+
     # Open the output file and write the bin to it
     with open(outFileName, 'w') as file:
-        file.writelines(hex)
+        file.writelines(bin)
 
 
 # Dictionary containing the pseudo instructions and their expansion as regular instrutions
@@ -53,8 +55,20 @@ def assemble(asm):
 # Removes comments (Denoted by #, //, or ;) as well as extra white space
 # Basically removes all the fluff and leaves a list of straight assembly (and labels)
 def cleaningPass(assembly):
-    # TODO
-    return
+    # Create the list to add the cleaned lines too
+    out = []
+
+    # Loop through each line checking if it has a comment separator
+    for line in assembly:
+        # If the line does not contain a comment, move on to the next one
+        if '#' not in line and '//' not in line and ';' not in line:
+            continue
+        # Replace every separator with ; and then split on that and append it to the output
+        line = line.replace('#', ';').replace('//')
+        out.append(line.split(';')[0].clean())
+
+    # Return the cleaned lines
+    return out
 
 # Parses psuedo instruction into their regular instruction expansions
 # TODO Currently does nothing because pseudo instruction aren't supported
@@ -63,7 +77,13 @@ def pseudoPass(assembly, pseudoDict):
 
 # Parses out labels from the assembly, filling the dictionary with the line numbers as it goes
 def labelPass(assembly, labelDict):
-    # TODO
+    # Create the list to add the lines without labels to
+    out = []
+
+    # Loop through each line checking fo
+
+    # Return the list with the labels removed
+    # The labels and their line numbers will be added to the dictionary that was passed in
     return
 
 # Turns the instructions into their machine code counterparts
