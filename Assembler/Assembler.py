@@ -62,10 +62,11 @@ def cleaningPass(assembly):
     for line in assembly:
         # If the line does not contain a comment, move on to the next one
         if '#' not in line and '//' not in line and ';' not in line:
+            out.append(line)
             continue
         # Replace every separator with ; and then split on that and append it to the output
         line = line.replace('#', ';').replace('//')
-        out.append(line.split(';')[0].clean())
+        out.append(line.split(';')[0].strip())
 
     # Return the cleaned lines
     return out
@@ -80,7 +81,32 @@ def labelPass(assembly, labelDict):
     # Create the list to add the lines without labels to
     out = []
 
-    # Loop through each line checking fo
+    # Loop through each line checking for a label
+    # Also keep a count of the line number
+    lineNum = 0
+    for line in assembly:
+        # Increment the line number
+        lineNum += 1
+        # If the line doesn't contain a label (no :), add it to the output and move on
+        if ':' not in line:
+            out.append(line)
+            continue
+        # Split on the colon
+        split = line.split(':')
+        # If the size of the split is greater than 2, throw an error
+        if len(split) > 2:
+            print("Too many label separators (:) on assembly line %d", lineNum)
+            exit(1)
+        # If the dict already contains the label, throw an error
+        if split[0] in labelDict.keys:
+            print("Duplicate label name: %s on assembly line %d", split[0], lineNum)
+            exit(1)
+        # Otherwise
+        # Add the label and its corrisponding line to the dictionary
+        labelDict[split[0]] = lineNum
+        # If the second part of the split is empty, the label is on its own line
+        # To deal with this, decrement the line number before the next loop
+        lineNum -= 1
 
     # Return the list with the labels removed
     # The labels and their line numbers will be added to the dictionary that was passed in
