@@ -365,27 +365,26 @@ typeToOpcode = {
 }
 
 # A dictionary from instruction to f2 and fr data
-# TODO Fill this out with data
 instrToFunct = {
     # R Types
-    'add'  : ("",""),
-    'sub'  : ("",""),
-    'xor'  : ("",""),
-    'or'   : ("",""),
-    'and'  : ("",""),
-    'sll'  : ("",""),
-    'srl'  : ("",""),
-    'sra'  : ("",""),
+    'add'  : ("00","0"),
+    'sll'  : ("01","0"),
+    'srl'  : ("10","0"),
+    'sra'  : ("11","0"),
+    'sub'  : ("00","1"),
+    'xor'  : ("01","1"),
+    'or'   : ("10","1"),
+    'and'  : ("11","1"),
     # I Types
-    'addi' : (""),
-    'slli' : (""),
-    'srli' : (""),
-    'srai' : (""),
+    'addi' : ("00"),
+    'slli' : ("01"),
+    'srli' : ("10"),
+    'srai' : ("11"),
     # SB Types
-    'beq' : (""),
-    'bne' : (""),
-    'blt' : (""),
-    'bge' : ("")
+    'beq' : ("00"),
+    'bne' : ("01"),
+    'blt' : ("10"),
+    'bge' : ("11")
 }
 
 # A dictionary between register names and the binary string corrisponding to it
