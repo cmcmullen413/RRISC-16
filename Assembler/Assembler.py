@@ -207,8 +207,18 @@ def assemblyPass(assembly, labelDict):
 # Helper functions to assemble specific types
 ###########
 def assembleRType(instr, rd, rs1, rs2):
-    # TODO
-    return
+    # Get the f2 and fr data for the instruction
+    functData = instrToFunct[instr]
+    # Get all the binary pieces
+    f2Bin = functData[0]
+    frBin = functData[1]
+    padBin = "0"
+    rs2Bin = getRegBin(rs2)
+    rs1Bin = getRegBin(rs1)
+    rdBin = getRegBin(rd)
+    opcode = typeToOpcode['R']
+    # Return them as once string
+    return f"{f2Bin}{frBin}{padBin}{rs2Bin}{rs1Bin}{rdBin}{opcode}"
 
 def assembleIType(instr, rd, rs1, imm):
     # TODO
@@ -244,6 +254,12 @@ def parseBaseOffset(arg):
     # TODO
     return ("", "")
 
+# Gets a the binary form of a register
+# Error handles for bad register input
+def getRegBin(reg):
+    # TODO
+    return ""
+
 # A dictionary from Type to instructions that are that type
 typeToInstrs = {
     'R': ['add', 'sub', 'xor', 'or', 'and', 'sll', 'srl', 'sra'],
@@ -266,6 +282,30 @@ typeToOpcode = {
     'SB': '101',
     'UJ': '110',
     'L-jalr': '111'
+}
+
+# A dictionary from instruction to f2 and fr data
+# TODO Fill this out with data
+instrToFunct = {
+    # R Types
+    'add'  : ("",""),
+    'sub'  : ("",""),
+    'xor'  : ("",""),
+    'or'   : ("",""),
+    'and'  : ("",""),
+    'sll'  : ("",""),
+    'srl'  : ("",""),
+    'sra'  : ("",""),
+    # I Types
+    'addi' : ("",""),
+    'slli' : ("",""),
+    'srli' : ("",""),
+    'srai' : ("",""),
+    # SB Types
+    'beq' : ("",""),
+    'bne' : ("",""),
+    'blt' : ("",""),
+    'bge' : ("","")
 }
 
 # A dictionary between register names and the binary string corrisponding to it
