@@ -119,7 +119,11 @@ def assemblyPass(assembly, labelDict):
     out = []
 
     # Loop through each line and assemble it
+    lineNum = 0
     for line in assembly:
+        # Track the line num for using labels
+        lineNum += 1
+
         # Replace the commas with whitespace and split on whitespace
         line = line.replace(',', ' ').split()
         # Grab the instruction from the split
@@ -173,7 +177,7 @@ def assemblyPass(assembly, labelDict):
             if len(line) != 4:
                 print(f"Wrong number of arguments ({len(line)-1}) given for {instr} instruction. Expected 3")
                 exit(1)
-            out.append(assembleSBType(instr, line[1], line[2], line[3]))
+            out.append(assembleSBType(instr, line[1], line[2], line[3], labelDict, lineNum))
         # U Type
         elif instr in typeToInstrs['U']:
             # If the length of the split is not 3, the wrong number of args were passed for a U Type
@@ -241,9 +245,18 @@ def assembleSType(instr, rs1, rs2, imm):
     opcode = typeToOpcode['S']
     return f"{immBin[:4]}{rs2Bin}{rs1Bin}{immBin[4:]}{opcode}"
 
-def assembleSBType(instr, rs1, rs2, label):
-    # TODO
-    return
+def assembleSBType(instr, rs1, rs2, labelOrImm, labelDict, lineNum):
+    # Get the f2 data for the instruction
+    functData = instrToFunct[instr]
+    # Parse the labelOrImm to an integer
+    imm = parseLabelOrImm(labelOrImm, labelDict, lineNum)
+    # Get all the binary pieces
+    f2Bin  = functData[0]
+    immBin = getImmBin(imm, 5)
+    rs2Bin = getRegBin(rs2)
+    rs1Bin = getRegBin(rs1)
+    opcode = typeToOpcode['SB']
+    return f"{f2Bin}{immBin[:2]}{rs2Bin}{rs1Bin}{immBin[2:]}{opcode}"
 
 def assembleUType(instr, rd, imm):
     # TODO
@@ -271,6 +284,17 @@ def getRegBin(reg):
 def getImmBin(imm, bits):
     # TODO
     return ""
+
+# labelOrImm could have been passed it as either a label for an immediate
+    #   since both beq x1, x2, -8 and beq x1, x2, LOOP are supported
+    # First try to parse it as an immediate, then as a label
+
+# When using a branch or jump instruction, both of the following formats are accepted
+#   instr rs1, rs2, imm     and        instr rs1, rs2, label
+# The helper function parses that third argument into an integer to be used as the immediate
+def parseLabelOrImm(labelOrImm, labelDict, lineNum):
+    # TODO
+    return 0
 
 # A dictionary from Type to instructions that are that type
 typeToInstrs = {
@@ -308,15 +332,15 @@ instrToFunct = {
     'srl'  : ("",""),
     'sra'  : ("",""),
     # I Types
-    'addi' : ("",""),
-    'slli' : ("",""),
-    'srli' : ("",""),
-    'srai' : ("",""),
+    'addi' : (""),
+    'slli' : (""),
+    'srli' : (""),
+    'srai' : (""),
     # SB Types
-    'beq' : ("",""),
-    'bne' : ("",""),
-    'blt' : ("",""),
-    'bge' : ("","")
+    'beq' : (""),
+    'bne' : (""),
+    'blt' : (""),
+    'bge' : ("")
 }
 
 # A dictionary between register names and the binary string corrisponding to it
