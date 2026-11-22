@@ -310,8 +310,17 @@ def getRegBin(reg):
 # Uses the built in string to integer casting so it can parse hex (0x), binary (0b), etc
 # Error handles for immediates that won't fit within the passed in bit size (signed)
 def getImmBin(imm, bits):
-    # TODO
-    return ""
+    # First try to parse imm as an int
+    try:
+        val = int(imm, 0)
+    except ValueError:
+        print(f"Could not convert immediate {imm} to a value")
+        exit(1)
+    # Now check that it can fit in the specified bits
+    if val < -2**(bits-1) or val > 2**(bits-1)-1:
+        print(f"Immediate ({imm}) is not within allowed range [{-2**(bits-1)},{2**(bits-1)-1}]")
+    # Return a string containing the binary representation of the value
+    return format(val, 'b')
 
 # labelOrImm could have been passed it as either a label for an immediate
     #   since both beq x1, x2, -8 and beq x1, x2, LOOP are supported
