@@ -287,6 +287,7 @@ def parseBaseOffset(arg):
     # Also check that there is nothing after close paren
     if '(' not in arg or ')' not in arg or len(arg.split[')'][1]) != 0:
         print(f"Bad base-offset notation ({arg}) in argument. Expected the form imm(reg)")
+        exit(1)
 
     # Split on the open paren
     split = arg.split('(')
@@ -294,13 +295,16 @@ def parseBaseOffset(arg):
     imm = split[0]
     # The reg is the second part, with the close paren removed
     reg = split[1][:-1]
-    return ("", "")
+    return (imm, reg)
 
 # Gets the binary form of a register
 # Error handles for bad register input
 def getRegBin(reg):
-    # TODO
-    return ""
+    # If the reg isn't in the keys for the reg dictionary, throw an error
+    if reg not in regToBin.keys:
+        print(f"Unrecognised register {reg}")
+        exit(1)
+    return regToBin[reg]
 
 # Gets the binary form of an immediate
 # Uses the built in string to integer casting so it can parse hex (0x), binary (0b), etc
