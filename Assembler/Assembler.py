@@ -319,19 +319,27 @@ def getImmBin(imm, bits):
     # Now check that it can fit in the specified bits
     if val < -2**(bits-1) or val > 2**(bits-1)-1:
         print(f"Immediate ({imm}) is not within allowed range [{-2**(bits-1)},{2**(bits-1)-1}]")
+        exit(1)
     # Return a string containing the binary representation of the value
     return format(val, 'b')
 
-# labelOrImm could have been passed it as either a label for an immediate
-    #   since both beq x1, x2, -8 and beq x1, x2, LOOP are supported
-    # First try to parse it as an immediate, then as a label
-
 # When using a branch or jump instruction, both of the following formats are accepted
 #   instr rs1, rs2, imm     and        instr rs1, rs2, label
-# The helper function parses that third argument into an integer to be used as the immediate
+# The helper function parses that third argument into the binary to be used as the immediate
 def parseLabelOrImm(labelOrImm, labelDict, lineNum):
-    # TODO
-    return 0
+    # First see if it is a label in the dict
+    if labelOrImm in labelDict.keys:
+        # The immediate is the label's lineNum minus the current lineNum
+        val = labelDict[labelOrImm] - lineNum
+    # Otherwise, try to parse it as an integer literal
+    else:
+        try:
+            val = int(labelOrImm, 0)
+        # If the parsing fails, raise an error
+        except ValueError:
+            print(f"Could not parse immediate or label {labelOrImm}")
+            exit(1)
+    return format(val, 'b')
 
 # A dictionary from Type to instructions that are that type
 typeToInstrs = {
