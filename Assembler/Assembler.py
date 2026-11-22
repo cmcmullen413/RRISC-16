@@ -271,8 +271,13 @@ def assembleUType(instr, rd, imm):
     return f"{imm}{rd[1:]}{opcode}"
 
 def assembleUJType(instr, rd, label):
-    # TODO
-    return
+    # Parse the labelOrImm to an integer
+    imm = parseLabelOrImm(labelOrImm, labelDict, lineNum)
+    # Get all the binary pieces
+    immBin = getImmBin(imm, 10)
+    rdBin  = getRegBin(rd)
+    opcode = typeToOpcode['SB']
+    return f"{immBin}{rdBin}{opcode}"
 
 # Parses base offset notation
 # Takes "imm(reg)"" and returns ("reg", "imm")
