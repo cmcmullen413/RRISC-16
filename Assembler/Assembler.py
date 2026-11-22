@@ -210,19 +210,27 @@ def assembleRType(instr, rd, rs1, rs2):
     # Get the f2 and fr data for the instruction
     functData = instrToFunct[instr]
     # Get all the binary pieces
-    f2Bin = functData[0]
-    frBin = functData[1]
+    f2Bin  = functData[0]
+    frBin  = functData[1]
     padBin = "0"
     rs2Bin = getRegBin(rs2)
     rs1Bin = getRegBin(rs1)
-    rdBin = getRegBin(rd)
+    rdBin  = getRegBin(rd)
     opcode = typeToOpcode['R']
     # Return them as once string
     return f"{f2Bin}{frBin}{padBin}{rs2Bin}{rs1Bin}{rdBin}{opcode}"
 
 def assembleIType(instr, rd, rs1, imm):
-    # TODO
-    return
+    # Get the f2 data for the instruction
+    functData = instrToFunct[instr]
+    # Get all the binary pieces
+    f2Bin  = functData[0]
+    immBin = getImmBin(imm, 5)
+    rs1Bin = getRegBin(rs1)
+    rdBin  = getRegBin(rd)
+    opcode = typeToOpcode['I']
+    # Return them as once string
+    return f"{f2Bin}{immBin}{rs1Bin}{rdBin}{opcode}"
 
 def assembleLloadType(instr, rd, rs1, imm):
     # TODO
@@ -254,9 +262,16 @@ def parseBaseOffset(arg):
     # TODO
     return ("", "")
 
-# Gets a the binary form of a register
+# Gets the binary form of a register
 # Error handles for bad register input
 def getRegBin(reg):
+    # TODO
+    return ""
+
+# Gets the binary form of an immediate
+# Uses the built in string to integer casting so it can parse hex (0x), binary (0b), etc
+# Error handles for immediates that won't fit within the passed in bit size (signed)
+def getImmBin(imm, bits):
     # TODO
     return ""
 
