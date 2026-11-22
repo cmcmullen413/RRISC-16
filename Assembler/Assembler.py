@@ -225,7 +225,7 @@ def assembleIType(instr, rd, rs1, imm):
     # Return them as once string
     return f"{f2Bin}{immBin}{rs1Bin}{rdBin}{opcode}"
 
-def assembleLloadType(instr, rd, rs1, imm):
+def assembleLType(instr, rd, rs1, imm):
     # Get all the binary pieces
     immBin = getImmBin(imm, 7)
     rs1Bin = getRegBin(rs1)
@@ -234,8 +234,12 @@ def assembleLloadType(instr, rd, rs1, imm):
     return f"{immBin}{rs1Bin}{rdBin}{opcode}"
 
 def assembleSType(instr, rs1, rs2, imm):
-    # TODO
-    return
+    # Get all the binary pieces
+    immBin = getImmBin(imm, 7)
+    rs2Bin = getRegBin(rs2)
+    rs1Bin = getRegBin(rs1)
+    opcode = typeToOpcode['S']
+    return f"{immBin[:4]}{rs2Bin}{rs1Bin}{immBin[4:]}{opcode}"
 
 def assembleSBType(instr, rs1, rs2, label):
     # TODO
