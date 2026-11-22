@@ -282,7 +282,18 @@ def assembleUJType(instr, rd, label):
 # Parses base offset notation
 # Takes "imm(reg)"" and returns ("reg", "imm")
 def parseBaseOffset(arg):
-    # TODO
+    # Check if there is a '(' and ')'
+    # If there isn't, throw an error for bad base offset argument
+    # Also check that there is nothing after close paren
+    if '(' not in arg or ')' not in arg or len(arg.split[')'][1]) != 0:
+        print(f"Bad base-offset notation ({arg}) in argument. Expected the form imm(reg)")
+
+    # Split on the open paren
+    split = arg.split('(')
+    # The immediate is the first part
+    imm = split[0]
+    # The reg is the second part, with the close paren removed
+    reg = split[1][:-1]
     return ("", "")
 
 # Gets the binary form of a register
