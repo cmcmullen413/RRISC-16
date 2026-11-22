@@ -191,7 +191,7 @@ def assemblyPass(assembly, labelDict):
             if len(line) != 3:
                 print(f"Wrong number of arguments ({len(line)-1}) given for {instr} instruction. Expected 2")
                 exit(1)
-            out.append(assembleIType(instr, line[1], line[2]))
+            out.append(assembleIType(instr, line[1], line[2], labelDict, lineNum))
         else:
             # Instr is not a real instrustion
             print(f"Unknown instruction {instr}")
@@ -270,9 +270,9 @@ def assembleUType(instr, rd, imm):
     opcode = typeToOpcode['U']
     return f"{imm}{rd[1:]}{opcode}"
 
-def assembleUJType(instr, rd, label):
+def assembleUJType(instr, rd, label, labelDict, lineNum):
     # Parse the labelOrImm to an integer
-    imm = parseLabelOrImm(labelOrImm, labelDict, lineNum)
+    imm = parseLabelOrImm(label, labelDict, lineNum)
     # Get all the binary pieces
     immBin = getImmBin(imm, 10)
     rdBin  = getRegBin(rd)
