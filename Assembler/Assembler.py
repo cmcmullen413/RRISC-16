@@ -142,25 +142,18 @@ def assemblyPass(assembly, labelDict):
                 exit(1)
             out.append(assembleIType(instr, line[1], line[2], line[3]))
         # L (load) Type
-        elif instr in typeToInstrs['L-load']:
+        elif instr in typeToInstrs['L']:
             # If the length of the split is 4, it is in the form: lw rd, rs1, imm
             if len(line) == 4:
-                out.append(assembleLloadType(instr, line[1], line[2], line[3]))
+                out.append(assembleLType(instr, line[1], line[2], line[3]))
             # If the length of the split is 3, it is in the form lw rd, imm(rs1)
             elif len(line) == 3:
                 baseOffset = parseBaseOffset(line[2])
-                out.apped(assembleLloadType(instr, line[1], baseOffset[0], baseOffset[1]))
+                out.apped(assembleLType(instr, line[1], baseOffset[0], baseOffset[1]))
             # Otherwise, the wrong number of arguments were given, so throw an error
             else:
                 print(f"Wrong number of arguments ({len(line)-1}) given for {instr} instruction. Expected 2 or 3")
                 exit(1)
-        # L (jalr) Type
-        elif instr in typeToInstrs['L-jalr']:
-            # If the length of the split is not 3, the wrong number of args were passed for a jalr instruction
-            if len(line) != 3:
-                print(f"Wrong number of arguments ({len(line)-1}) given for {instr} instruction. Expected 2")
-                exit(1)
-            out.append(assembleLjalrType(instr, line[1], line[2]))
         # S Type
         elif instr in typeToInstrs['S']:
             # If the length of the split is 4, it is in the form: sw rd, rs1, imm
@@ -233,12 +226,12 @@ def assembleIType(instr, rd, rs1, imm):
     return f"{f2Bin}{immBin}{rs1Bin}{rdBin}{opcode}"
 
 def assembleLloadType(instr, rd, rs1, imm):
-    # TODO
-    return
-
-def assembleLjalrType(instr, rd, label):
-    # TODO
-    return
+    # Get all the binary pieces
+    immBin = getImmBin(imm, 7)
+    rs1Bin = getRegBin(rs1)
+    rdBin  = getRegBin(rd)
+    opcode = typeToOpcode[f'L-{instr}']
+    return f"{immBin}{rs1Bin}{rdBin}{opcode}"
 
 def assembleSType(instr, rs1, rs2, imm):
     # TODO
@@ -279,8 +272,7 @@ def getImmBin(imm, bits):
 typeToInstrs = {
     'R': ['add', 'sub', 'xor', 'or', 'and', 'sll', 'srl', 'sra'],
     'I': ['addi', 'slli', 'srli', 'srai'],
-    'L-load': ['lw'],
-    'L-jalr': ['jalr'],
+    'L': ['lw', 'jalr'],
     'S': ['sw'],
     'SB': ['beq', 'bne', 'blt', 'bge'],
     'U': ['lui'],
@@ -291,7 +283,7 @@ typeToInstrs = {
 typeToOpcode = {
     'R': '000',
     'I': '001',
-    'L-load': '010',
+    'L-lw': '010',
     'S': '011',
     'U': '100',
     'SB': '101',
