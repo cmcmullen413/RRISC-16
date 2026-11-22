@@ -259,8 +259,16 @@ def assembleSBType(instr, rs1, rs2, labelOrImm, labelDict, lineNum):
     return f"{f2Bin}{immBin[:2]}{rs2Bin}{rs1Bin}{immBin[2:]}{opcode}"
 
 def assembleUType(instr, rd, imm):
-    # TODO
-    return
+    # Get all the binary pieces
+    immBin = getImmBin(imm, 11)
+    rdBin  = getRegBin(rd)
+    # Throw an error if the first bit of the rd is a 0
+    # lui only supports loading into the upper 4 registers by design
+    if rdBin[0] != '1':
+        print(f"Unsupported register ({rd}) for {instr} instruction. {instr} only loads to x4-x7")
+        exit(1)
+    opcode = typeToOpcode['U']
+    return f"{imm}{rd[1:]}{opcode}"
 
 def assembleUJType(instr, rd, label):
     # TODO
