@@ -26,11 +26,11 @@ def main():
 
     bin = assemble(assembly)
 
-    # TODO Make the output be in binary or hex
-
     # Open the output file and write the bin to it
     with open(outFileName, 'w') as file:
-        file.writelines(bin)
+        for line in bin:
+            # TODO Make the output be in binary or hex
+            file.write(f"{line}\n")
 
 
 # Dictionary containing the pseudo instructions and their expansion as regular instrutions
@@ -60,12 +60,20 @@ def cleaningPass(assembly):
 
     # Loop through each line checking if it has a comment separator
     for line in assembly:
+        # If the line is empty, skip it
+        if len(line) == 0:
+            continue
         # If the line does not contain a comment, move on to the next one
         if '#' not in line and '//' not in line and ';' not in line:
-            out.append(line)
+            out.append(line.strip())
             continue
         # Replace every separator with ; and then split on that and append it to the output
-        line = line.replace('#', ';').replace('//')
+        line = line.replace('#', ';').replace('//', ';')
+        line = line.split(';')
+
+        # If there is nothing left of the ; in the line, don't add anything to the output
+        if len(line[0]) == 0:
+            continue
         out.append(line.split(';')[0].strip())
 
     # Return the cleaned lines
@@ -98,7 +106,7 @@ def labelPass(assembly, labelDict):
             print(f"Too many label separators (:) on assembly line {lineNum}")
             exit(1)
         # If the dict already contains the label, throw an error
-        if split[0] in labelDict.keys:
+        if split[0] in labelDict.keys():
             print(f"Duplicate label name: {split[0]} on assembly line {lineNum}")
             exit(1)
         # Otherwise
@@ -248,11 +256,10 @@ def assembleSType(instr, rs1, rs2, imm):
 def assembleSBType(instr, rs1, rs2, labelOrImm, labelDict, lineNum):
     # Get the f2 data for the instruction
     functData = instrToFunct[instr]
-    # Parse the labelOrImm to an integer
-    imm = parseLabelOrImm(labelOrImm, labelDict, lineNum)
+    # Parse the labelOrImm to binary
+    immBin = parseLabelOrImm(labelOrImm, labelDict, lineNum, 5)
     # Get all the binary pieces
     f2Bin  = functData[0]
-    immBin = getImmBin(imm, 5)
     rs2Bin = getRegBin(rs2)
     rs1Bin = getRegBin(rs1)
     opcode = typeToOpcode['SB']
@@ -271,10 +278,9 @@ def assembleUType(instr, rd, imm):
     return f"{imm}{rd[1:]}{opcode}"
 
 def assembleUJType(instr, rd, label, labelDict, lineNum):
-    # Parse the labelOrImm to an integer
-    imm = parseLabelOrImm(label, labelDict, lineNum)
+    # Parse the labelOrImm to binary
+    immBin = parseLabelOrImm(label, labelDict, lineNum, 10)
     # Get all the binary pieces
-    immBin = getImmBin(imm, 10)
     rdBin  = getRegBin(rd)
     opcode = typeToOpcode['SB']
     return f"{immBin}{rdBin}{opcode}"
@@ -301,7 +307,7 @@ def parseBaseOffset(arg):
 # Error handles for bad register input
 def getRegBin(reg):
     # If the reg isn't in the keys for the reg dictionary, throw an error
-    if reg not in regToBin.keys:
+    if reg not in regToBin.keys():
         print(f"Unrecognised register {reg}")
         exit(1)
     return regToBin[reg]
@@ -321,14 +327,14 @@ def getImmBin(imm, bits):
         print(f"Immediate ({imm}) is not within allowed range [{-2**(bits-1)},{2**(bits-1)-1}]")
         exit(1)
     # Return a string containing the binary representation of the value
-    return format(val, 'b')
+    return format(val, f'0{bits}b')
 
 # When using a branch or jump instruction, both of the following formats are accepted
 #   instr rs1, rs2, imm     and        instr rs1, rs2, label
 # The helper function parses that third argument into the binary to be used as the immediate
-def parseLabelOrImm(labelOrImm, labelDict, lineNum):
+def parseLabelOrImm(labelOrImm, labelDict, lineNum, bits):
     # First see if it is a label in the dict
-    if labelOrImm in labelDict.keys:
+    if labelOrImm in labelDict.keys():
         # The immediate is the label's lineNum minus the current lineNum
         val = labelDict[labelOrImm] - lineNum
     # Otherwise, try to parse it as an integer literal
@@ -339,7 +345,7 @@ def parseLabelOrImm(labelOrImm, labelDict, lineNum):
         except ValueError:
             print(f"Could not parse immediate or label {labelOrImm}")
             exit(1)
-    return format(val, 'b')
+    return format(val, f'0{bits}b')
 
 # A dictionary from Type to instructions that are that type
 typeToInstrs = {
