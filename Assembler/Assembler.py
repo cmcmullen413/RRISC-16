@@ -65,7 +65,7 @@ def cleaningPass(assembly):
             continue
         # If the line does not contain a comment, move on to the next one
         if '#' not in line and '//' not in line and ';' not in line:
-            out.append(line.strip())
+            out.append(line.strip().lower())
             continue
         # Replace every separator with ; and then split on that and append it to the output
         line = line.replace('#', ';').replace('//', ';')
@@ -74,7 +74,7 @@ def cleaningPass(assembly):
         # If there is nothing left of the ; in the line, don't add anything to the output
         if len(line[0]) == 0:
             continue
-        out.append(line.split(';')[0].strip())
+        out.append(line.split(';')[0].strip().lower())
 
     # Return the cleaned lines
     return out
