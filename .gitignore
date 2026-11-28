@@ -2,3 +2,4 @@ work/*
 RRISC-16.mpf
 RRISC-16.cr.mti
 vsim.wlf
+Assembler/__pycache__/*
