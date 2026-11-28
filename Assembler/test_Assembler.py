@@ -29,17 +29,43 @@ def assertManyLines(asmList, binList):
 ####################
 
 # Error Catching Tests
+####################
 
 # R-Type Tests
+####################
+# One test for each operation, varying registers
+#
+# add x0, x1, x2 -> 00 0 0 010 001 000 000
+assertSingleLine("add x0, x1, x2", "0000010001000000")
+# sll x3, x4, x5 -> 01 0 0 101 100 011 000
+assertSingleLine("sll x3, x4, x5", "0100101100011000")
+# srl x6, x7, x0 -> 10 0 0 000 111 110 000
+assertSingleLine("srl x6, x7, x0", "1000000111110000")
+# sra x1, x2, x3 -> 11 0 0 011 010 001 000
+assertSingleLine("sra x1, x2, x3", "1100011010001000")
+# sub x4, x5, x6 -> 00 1 0 110 101 100 000
+assertSingleLine("sub x4, x5, x6", "0010110101100000")
+# xor x7, x0, x1 -> 01 1 0 001 000 111 000
+assertSingleLine("xor x7, x0, x1", "0110001000111000")
+# or  x2, x3, x4 -> 10 1 0 100 011 010 000
+assertSingleLine("or x2, x3, x4",  "1010100011010000")
+# and x5, x6, x7 -> 11 1 0 111 110 101 000
+assertSingleLine("and x5, x6, x7", "1110111110101000")
 
 # I-Type Tests
+####################
 
 # S-Type Tests
+####################
 
 # SB-Type Tests
+####################
 
 # U-Type Tests
+####################
 
 # UJ-Type Tests
+####################
 
 # Multi-Line Tests
+####################
