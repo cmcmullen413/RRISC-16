@@ -425,4 +425,5 @@ regToBin = {
 
 # Call the main function to run the whole program
 # Has to be at the end because python is interpretted
-main()
+if __name__ == "__main__":
+    main()
